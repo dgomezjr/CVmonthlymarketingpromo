@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>October 2026 — Reservations &amp; Sales Promotions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;1,400&family=Josefin+Sans:wght@300;400;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --onyx:#25282C; --pearl:#FBF9F9; --swell:#106E81; --swell-dark:#0B505E;
+    --latte:#9A8478; --latte-light:#F0E9E4; --latte-panel:#F7F1EC;
+    --gold:#C9B178; --gold-light:#F2E9D9; --hairline: rgba(37,40,44,0.12);
+    --edit: #378ADD; --caution:#B4552E; --caution-light:#FBEDE6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{ background:#E7E4DE; font-family:'Poppins',sans-serif; color:var(--onyx); padding:48px 0; }
+  .page{ max-width:920px; margin:0 auto; background:var(--pearl); box-shadow:0 20px 60px rgba(0,0,0,0.12); }
+
+  .admin-bar{ display:none; }
+  body.editing .admin-bar{
+    display:flex; position:fixed; bottom:20px; right:20px; max-width:none; margin:0;
+    background:var(--onyx); padding:10px 12px; border-radius:6px; box-shadow:0 8px 24px rgba(0,0,0,0.25); z-index:999;
+  }
+  .admin-bar .left{ color:#C7CDCF; margin-right:10px; align-self:center; font-size:12px; }
+  .admin-controls{ display:flex; gap:10px; align-items:center; }
+  .admin-btn{ font-family:'Poppins',sans-serif; font-size:12px; font-weight:500; letter-spacing:0.2px; padding:8px 14px; border-radius:4px; border:1px solid var(--hairline); background:transparent; color:#fff; border-color:rgba(255,255,255,0.25); cursor:pointer; }
+  .admin-btn.primary{ background:#fff; color:var(--onyx); }
+  .admin-btn.danger{ color:#F09595; border-color:rgba(240,149,149,0.4); }
+
+  .header{ background:var(--onyx); color:var(--pearl); padding:44px 56px 38px; position:relative; overflow:hidden; }
+  .header .frond{ position:absolute; right:-40px; top:-30px; width:260px; height:260px; opacity:0.06; }
+  .wordmark{ font-family:'Josefin Sans',sans-serif; font-weight:300; font-size:15px; letter-spacing:5px; text-transform:uppercase; color:var(--pearl); opacity:0.85; position:relative; }
+  .wordmark span{color:var(--gold);}
+  .header h1{ font-family:'Fraunces',serif; font-weight:300; font-style:italic; font-size:46px; margin-top:20px; line-height:1.1; position:relative; }
+  .header h1 em{ font-style:normal; font-weight:500; }
+  .header p{ font-size:14px; font-weight:300; color:#C7CDCF; margin-top:12px; max-width:480px; line-height:1.6; position:relative; }
+  .meta{ display:flex; justify-content:space-between; padding:22px 56px; border-bottom:1px solid var(--hairline); font-size:12px; color:var(--latte); letter-spacing:0.4px; }
+  .stats{ display:flex; border-bottom:1px solid var(--hairline); }
+  .stat{ flex:1; padding:18px 56px; text-align:left; }
+  .stat:first-child{ border-right:1px solid var(--hairline); }
+  .stat .num{ font-family:'Fraunces',serif; font-size:28px; font-weight:500; color:var(--onyx); }
+  .stat .lbl{ font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:#9AA0A2; margin-top:2px; }
+  .stat.advisor .num{ color:#8A7530; }
+  .section{ padding:44px 56px 8px; }
+  .section.advisor-block{ background:var(--latte-panel); }
+  .section-label{ display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+  .section-label .line{ width:28px;height:1px;background:var(--swell); }
+  .section-label span{ font-family:'Josefin Sans',sans-serif; font-size:12px; letter-spacing:3px; text-transform:uppercase; color:var(--swell); font-weight:600; }
+  .section h2{ font-family:'Fraunces',serif; font-weight:300; font-size:27px; margin-bottom:6px; }
+  .section .sub{ font-size:13px; color:#6B6F72; margin-bottom:28px; max-width:560px; line-height:1.6; }
+  .cards{ display:flex; flex-direction:column; gap:14px; padding-bottom:20px; }
+  .card{ background:#fff; border:1px solid var(--hairline); border-left:3px solid var(--swell); border-radius:2px; padding:20px 24px; position:relative; }
+  .card.advisor{ border-left:3px solid var(--gold); }
+  .card-top h3{ font-family:'Fraunces',serif; font-weight:500; font-size:18px; line-height:1.35; margin-bottom:10px; }
+
+  .windows{ display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .windows .w{ font-size:11px; letter-spacing:0.3px; background:#E7F1F3; color:var(--swell-dark); padding:5px 10px; border-radius:2px; }
+  .windows .w b{ font-weight:600; }
+  .card.advisor .windows .w{ background:var(--gold-light); color:#6B5A2E; }
+  .dest .windows .w{ background:#E7F1F3; color:var(--swell-dark); }
+
+  p.includes{ font-size:13.5px; color:#4C4F52; line-height:1.6; margin-bottom:8px; }
+  .caution{ font-size:12px; color:var(--caution); background:var(--caution-light); padding:8px 12px; border-radius:2px; margin-top:10px; line-height:1.5; }
+  .fyi{ font-size:11.5px; color:#8B8E90; font-style:italic; margin-top:6px; }
+
+  .details{ display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--hairline); }
+  .card.open .details{ display:block; }
+  .terms-box{ font-size:10.5px; color:#7A7D80; line-height:1.6; background:#F7F7F5; border-radius:2px; padding:10px 12px; max-height:130px; overflow-y:auto; margin-bottom:10px; }
+  .learn-link{ display:inline-block; font-size:11.5px; color:var(--swell-dark); text-decoration:none; border-bottom:1px solid var(--swell); }
+  .card.advisor .learn-link{ color:#8A7530; border-color:var(--gold); }
+
+  .dest-list{ display:flex; flex-direction:column; gap:14px; margin-bottom:6px; }
+  .dest{ padding:14px 16px; background:#F7F7F5; border-radius:2px; }
+  .dest-name{ font-family:'Josefin Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--swell-dark); margin-bottom:8px; }
+  .dest-blurb{ font-size:12.5px; color:#4C4F52; line-height:1.6; margin-bottom:8px; }
+
+  .toggle{ margin-top:14px; background:none; border:none; padding:0; font-family:'Poppins',sans-serif; font-size:12px; font-weight:500; color:var(--swell-dark); letter-spacing:0.3px; cursor:pointer; display:flex; align-items:center; gap:6px; }
+  .card.advisor .toggle{ color:#8A7530; }
+  .toggle .chev{ transition:transform 0.15s ease; font-size:9px; }
+  .card.open .toggle .chev{ transform:rotate(180deg); }
+  .callout{ background:#fff; border:1px solid #E3D6CB; padding:16px 20px; font-size:12.5px; color:#5C4B3E; line-height:1.6; margin-bottom:22px; }
+  .callout b{ color:var(--onyx); font-weight:500; }
+  .footer{ padding:30px 56px 40px; border-top:1px solid var(--hairline); font-size:11px; color:#9AA0A2; display:flex; justify-content:space-between; }
+
+  body.editing [contenteditable="true"]{ outline:1px dashed var(--edit); outline-offset:3px; border-radius:2px; cursor:text; }
+  body.editing [contenteditable="true"]:focus{ background:#F0F6FC; }
+  .remove-card{ display:none; position:absolute; top:14px; right:14px; width:22px; height:22px; border-radius:50%; border:1px solid #E7C6C6; background:#fff; color:#A32D2D; font-size:13px; line-height:1; cursor:pointer; align-items:center; justify-content:center; }
+  body.editing .remove-card{ display:flex; }
+  .add-card{ display:none; align-items:center; justify-content:center; gap:6px; padding:16px; border:1px dashed var(--hairline); border-radius:2px; background:transparent; color:#6B6F72; font-family:'Poppins',sans-serif; font-size:13px; cursor:pointer; margin-bottom:24px; }
+  body.editing .add-card{ display:flex; }
+</style>
+</head>
+<body>
+
+<div class="admin-bar">
+  <div class="left" id="save-status">Editing</div>
+  <div class="admin-controls">
+    <button class="admin-btn danger" onclick="resetData()">Reset to original</button>
+    <button class="admin-btn primary" onclick="toggleEdit()">Done editing</button>
+  </div>
+</div>
+
+<div class="page">
+  <div class="header">
+    <svg class="frond" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 190C100 190 60 140 60 90C60 50 100 10 100 10C100 10 140 50 140 90C140 140 100 190 100 190Z" stroke="#FBF9F9" stroke-width="1.5"/>
+      <path d="M100 190C100 190 40 160 30 110" stroke="#FBF9F9" stroke-width="1"/>
+      <path d="M100 190C100 190 160 160 170 110" stroke="#FBF9F9" stroke-width="1"/>
+    </svg>
+    <div class="wordmark" id="secret-trigger" style="cursor:default;">Classic <span>Vacations</span></div>
+    <h1><span contenteditable="true" data-path="meta" data-field="title" oninput="onEdit(this)" id="meta-title"></span><br><em contenteditable="true" data-path="meta" data-field="subtitle" oninput="onEdit(this)" id="meta-subtitle"></em></h1>
+    <p contenteditable="true" data-path="meta" data-field="intro" oninput="onEdit(this)" id="meta-intro"></p>
+  </div>
+
+  <div class="meta">
+    <span contenteditable="true" data-path="meta" data-field="sourceLine" oninput="onEdit(this)" id="meta-source"></span>
+    <span contenteditable="true" data-path="meta" data-field="nextEdition" oninput="onEdit(this)" id="meta-next"></span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="client-count">8</div><div class="lbl">Client &amp; traveler offers</div></div>
+    <div class="stat advisor"><div class="num" id="advisor-count">4</div><div class="lbl">Advisor incentive offers</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-label"><div class="line"></div><span>Bookable now</span></div>
+    <h2>Client &amp; traveler offers</h2>
+    <p class="sub">Eligible for Special Offers on the public site. Safe to reference with advisors in any channel.</p>
+    <div class="cards" id="client-cards"></div>
+    <button class="add-card" onclick="addCard('client')">+ Add client offer</button>
+  </div>
+
+  <div class="section advisor-block">
+    <h2>Advisor incentive offers</h2>
+    <p class="sub">Commission and booking incentives for advisors. Cannot appear on the pre-login site — visibility depends entirely on repeated internal push.</p>
+    <div class="callout"><b>Why this section exists:</b> these promotions reveal commission structure, so they can never sit on Special Offers. Res and sales are the only channel advisors have to find out about them — repeat the reminder more than feels necessary.</div>
+    <div class="cards" id="advisor-cards"></div>
+    <button class="add-card" onclick="addCard('advisor')">+ Add advisor incentive</button>
+  </div>
+
+  <div class="footer">
+    <span>Classic Vacations · Reservations &amp; Sales Enablement</span>
+    <span contenteditable="true" data-path="meta" data-field="statusLine" oninput="onEdit(this)" id="meta-status"></span>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'cv-oct-2026-promo-data-v3';
+
+const TAKEOFF_TERMS = `Classic Vacations offers customers access to vacation packages, which are provided by separate and independent vendors of travel services. Classic Vacations does not operate, control, or otherwise provide the services of the independent travel vendors. Offers are valid on new bookings only and cannot be applied to existing reservations. Prices shown are per person, land-only, based on double occupancy, and do not include optional excursions or other optional items unless expressly stated otherwise. Obvious errors and misprints are not binding. Offers are subject to availability at the time of booking and may be modified, replaced, or discontinued without prior notice. Prices are subject to change until full payment is received. Blackout dates, minimum night stays, air booking requirements, seasonal surcharges, resort fees (if applicable), and other restrictions may apply. Customers are responsible for purchasing travel insurance. Some offers may require the purchase of Classic Vacations' Travel Smart Plan or a travel waiver for eligibility. Customers are responsible for paying any cancellation fees. Offers are not valid for Group Travel unless explicitly stated. Booking and travel dates may vary by offer. Additional promotions and alternative departure dates may be available, potentially resulting in different pricing or hotel inclusions. Customers are responsible for all applicable taxes and fees associated with a booking, including those associated with complimentary nights at hotels, where applicable. For properties where Classic Vacations offers dynamic pricing rates, prices are subject to change based on market conditions and external factors beyond Classic Vacations' control. Additional terms and conditions may apply to specific offers. Please refer to the individual offer details for full terms. California Seller of Travel # 2079429. Registration as a seller of travel does not constitute approval by the State of California.`;
+
+const CST_TERMS = `Offers valid on new bookings only. Prices shown are per-person, land-only, and based upon double occupancy, unless expressly noted otherwise. Offers are subject to availability at time of booking and may be changed or discontinued at any time without notice. Blackout dates, minimum night stays, minimum stay requirements on air, seasonal surcharges, resort fees (if any), and other restrictions may also apply. Offers are not valid for Group Travel. Some booking and travel dates may vary. Other promotions and departure dates available which may result in a different rate and/or hotel inclusion. Customer is responsible for hotel taxes and fees on the free night offers, where applicable. For those properties where Classic Vacations has access to dynamic pricing rates, those rates will likely fluctuate from time to time based on market conditions and other factors beyond Classic Vacations control. Classic Vacations CST# 2079429-20.`;
+
+const defaultData = {
+  meta: {
+    title: "October 2026",
+    subtitle: "promotions at a glance",
+    intro: "Everything live this month, in one place — sent by the 1st so every conversation starts from the same page.",
+    sourceLine: "Source: Classic Promos sheet",
+    nextEdition: "Next edition: November 1",
+    statusLine: ""
+  },
+  client: [
+    {
+      title:"Partners of the Month",
+      bw:"10/1/26 – 10/31/26", tw:"",
+      includes:"Featuring exclusive offers, exciting incentives, and much more. Customizable flyers are provided to help showcase these properties and close the deal: Hyatt Inclusive Collection Adult Brands, The Ritz-Carlton Maui Kapalua, Lily Beach Resort & Spa.",
+      terms:"", link:"https://www.classicvacations.com/c/partners-of-the-month", note:""
+    },
+    {
+      title:"Island of the Month — Puerto Rico",
+      bw:"10/1/26 – 10/31/26", tw:"",
+      includes:"Special deals, valuable incentives, and custom-made flyers created to help highlight Puerto Rico properties and secure client bookings.",
+      terms:"", link:"https://www.classicvacations.com/c/island-of-the-month", note:""
+    },
+    {
+      title:"Takeoff — limited-time offers for elevated, effortless island escapes",
+      bw:"", tw:"",
+      includes:"Seven destinations currently live, each with its own added-value offer, booking window, and travel window — see below for full detail on each.",
+      terms:"", link:"", note:"",
+      destinations:[
+        { name:"Hawaii", blurb:"Save up to 40% off and enjoy up to $500 in added value on select luxury resorts, plus resort inclusions and a complimentary Alamo car rental upgrade.", bw:"8/3/26 – 10/31/26", tw:"8/3/26 – 5/31/27", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/takeoff-to-hawaii", note:"All hotels open by Sept 28 except Sheraton Kauai." },
+        { name:"Fiji", blurb:"Discover the radiant beauty of Fiji with added value at select resorts, including resort credits, complimentary nights, and daily breakfast, plus a $400 instant booking credit on stays of 7 nights or longer.", bw:"10/1/26 – 10/31/26", tw:"10/1/26 – 7/31/27", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/takeoff-to-fiji", note:"Instant booking credit doubled from $200 to $400 versus last month." },
+        { name:"Tahiti", blurb:"Escape to Tahiti with up to 35% off, complimentary daily breakfast, up to $250 in resort credits, plus a $400 instant booking credit on stays of 7 nights or longer.", bw:"10/1/26 – 10/31/26", tw:"10/1/26 – 7/31/27", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/takeoff-to-tahiti", note:"Instant booking credit doubled from $200 to $400 versus last month." },
+        { name:"Caribbean", blurb:"Escape to the Caribbean with $200 instant savings on 4-night stays at select resorts across sun-soaked islands, turquoise waters, and beloved beach destinations.", bw:"9/9/26 – 10/31/26", tw:"9/9/26 – 3/31/27", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/takeoff-to-the-caribbean", note:"" },
+        { name:"Barbados", blurb:"$200 instant booking credit for stays of 5 nights or more.", bw:"9/21/26 – 10/31/26", tw:"10/1/26 – 3/31/27", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/barbados-tourism-board", note:"Kept separate from Takeoff to Caribbean — different travel window." },
+        { name:"Mexico", blurb:"For a limited time, enjoy $200 instant savings on 4-night stays at participating properties.", bw:"9/3/26 – 10/31/26", tw:"9/3/26 – 3/31/27", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/advisor-booking-incentive", note:"" },
+        { name:"Maldives", blurb:"Limited-time resort offers, featured Dubai stays, and a $200 instant booking credit on stays of 7 nights or longer.", bw:"8/17/26 – 11/30/26", tw:"8/17/26 – 10/31/27", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/takeoff-to-the-maldives", note:"", caution:"Live on site but not being actively promoted due to a tax issue — Product Development is working to resolve it." }
+      ]
+    },
+    { title:"European Riches 2026/2027", bw:"Coming 10/19/26", tw:"TBA", includes:"An exclusive portfolio of European properties curated by Classic Vacations experts, featuring Classic-exclusive amenity offers.", terms:"Offers are subject to availability at time of booking and may be changed or discontinued at any time without notice. No cash refunds for unused services and inclusions. Blackout dates, minimum night stays, resort fees (if any), and other restrictions may apply. Offers not valid for Group Travel. Booking and travel dates vary by hotel.", link:"https://www.classicvacations.com/c/european-riches", note:"" },
+    { title:"European Riches SELECT 2026/2027", bw:"Coming 10/20/26", tw:"TBA", includes:"An exclusive portfolio of exceptional 5-star European properties curated by Classic Vacations experts, featuring Classic-exclusive amenity offers.", terms:"Offers are subject to availability at time of booking and may be changed or discontinued at any time without notice. No cash refunds for unused services and inclusions. Blackout dates, minimum night stays, resort fees (if any), and other restrictions may apply. Offers not valid for Group Travel. Booking and travel dates vary by hotel.", link:"https://www.classicvacations.com/c/european-riches-select", note:"" },
+    { title:"Classic Picks — Last Call, First Look", bw:"Live 10/12/26 – 12/7/26 (booking window varies by property)", tw:"Varies by property", includes:"Give clients more reasons to book, whether they're looking for a last-minute 2026 escape or already planning their 2027 travels. Hand-selected by Classic's product team — the people who know these hotels inside and out — from iconic luxury resorts to all-inclusive escapes.", terms:CST_TERMS, link:"https://www.classicvacations.com/c/classic-picks", note:"" },
+    { title:"5-Star Stays — Last Call, First Look", bw:"Live 9/28/26 – 11/23/26 (booking window varies by property)", tw:"Varies by property", includes:"Exceptional offers handpicked by Classic's product experts, featuring luxury properties known for standout service, elevated design, and unforgettable experiences.", terms:CST_TERMS, link:"https://www.classicvacations.com/c/5-star-stays", note:"" },
+    { title:"Classic Asia Escapes", bw:"Varies by property", tw:"Varies by property", includes:"A curated collection of luxury stays across Asia's most inspiring destinations. Offers may include special savings, complimentary breakfast, free nights, and other added-value amenities.", terms:TAKEOFF_TERMS, link:"https://www.classicvacations.com/c/classic-asia-escapes", note:"" }
+  ],
+  advisor: [
+    { title:"Affiliate properties — all at full commission", bw:"9/15/26 – 10/31/26", tw:"", includes:"Full commission on every new Affiliate Hotel booking, on top of full commission already earned on Preferred Properties.", terms:"Advisor incentive exclusions may apply to specific hotels, room categories or rate types. Valid only for new bookings. Incentive applies to bookings made online or through the reservations team. May be changed or discontinued at any time without notice. " + CST_TERMS, link:"https://www.classicvacations.com/c/advisor-booking-incentive", note:"" },
+    { title:"Earn up to 5% bonus commission with Hilton", bw:"9/17/26 – 11/30/26", tw:"9/15/26 – 5/31/27", includes:"Earn up to an additional 5% commission when booking participating Hilton properties across the Caribbean, Costa Rica, U.S. & Canada, Hawaii, and Mexico.", terms:"Promotion may be discontinued at any time. Offers valid on new bookings only. Subject to availability; blackout dates, minimum night stays, and other restrictions may apply. Not valid for Group Travel.", link:"https://www.classicvacations.com/c/hilton-hotels-and-resorts", note:"" },
+    { title:"Classic Anniversary Sweepstakes — Europe, Tahiti, Costa Rica", bw:"Europe: closed · Tahiti &amp; Costa Rica: 1/6/26 – 9/30/26", tw:"", includes:"A year-long sweepstakes celebrating three milestone anniversaries. Advisors earn chances to win by booking eligible travel and completing destination quizzes. Check back monthly for updated fun facts and prize details.", terms:"Open to registered travel advisors with qualifying bookings and payment on file during the destination booking and travel window. Advisors must complete the destination quiz with a 100 percent score and meet minimum qualifying sales. Prizes subject to availability and supplier restrictions; non-transferable, no cash redemption. Classic Vacations may modify or cancel at any time. Void where prohibited.", link:"https://www.classicvacations.com/c/anniversary-sweepstakes", note:"See official rules at the bottom of the webpage for full eligibility and prize details." },
+    { title:"Classic Loves Travel Advisors", bw:"5/1/26 – 11/30/26", tw:"", includes:"Every new eligible booking earns another automatic entry to win shopping money in time for the holidays.", terms:"NO PURCHASE NECESSARY. Enter by November 30, 2026. Open to legal residents of the eligible territory of legal age. One prize per winner. Winner notification by December 11, 2026. Odds depend on number of eligible entries. Void where prohibited.", link:"https://www.classicvacations.com/c/classic-loves-travel-advisors", note:"" }
+  ]
+};
+
+let data = loadData();
+let editing = false;
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      if(!parsed.meta) parsed.meta = JSON.parse(JSON.stringify(defaultData.meta));
+      if(parsed.meta.statusLine === undefined) parsed.meta.statusLine = defaultData.meta.statusLine;
+      return parsed;
+    }
+  }catch(e){}
+  return JSON.parse(JSON.stringify(defaultData));
+}
+function saveData(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  document.getElementById('save-status').textContent = 'Saved to this browser · ' + new Date().toLocaleTimeString();
+}
+function resetData(){
+  if(!confirm('Reset all cards back to the original October data? This clears your edits in this browser.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  data = JSON.parse(JSON.stringify(defaultData));
+  render();
+}
+function toggleEdit(){
+  editing = !editing;
+  document.body.classList.toggle('editing', editing);
+  if(editing) document.getElementById('save-status').textContent = 'Editing — click any field to change it';
+}
+
+function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function windowsHtml(bw, tw){
+  if(!bw && !tw) return '';
+  let out = '<div class="windows">';
+  if(bw) out += '<div class="w"><b>Book:</b> '+escapeHtml(bw)+'</div>';
+  if(tw) out += '<div class="w"><b>Travel:</b> '+escapeHtml(tw)+'</div>';
+  out += '</div>';
+  return out;
+}
+
+function destHtml(d){
+  const cautionHtml = d.caution ? '<div class="caution">'+escapeHtml(d.caution)+'</div>' : '';
+  const noteHtml = d.note ? '<div class="fyi">'+escapeHtml(d.note)+'</div>' : '';
+  const termsHtml = d.terms ? '<div class="terms-box">'+escapeHtml(d.terms)+'</div>' : '';
+  const linkHtml = d.link ? '<a class="learn-link" href="'+d.link+'" target="_blank" rel="noopener">Full offer &amp; terms</a>' : '';
+  return '<div class="dest">' +
+    '<div class="dest-name">'+escapeHtml(d.name)+'</div>' +
+    windowsHtml(d.bw, d.tw) +
+    '<div class="dest-blurb">'+escapeHtml(d.blurb)+'</div>' +
+    cautionHtml + noteHtml + termsHtml + linkHtml +
+  '</div>';
+}
+
+function cardHtml(type, i, o){
+  const isAdvisor = type === 'advisor';
+  const hasDest = o.destinations && o.destinations.length;
+  const destBlock = hasDest ? '<div class="dest-list">' + o.destinations.map(destHtml).join('') + '</div>' : '';
+  const termsHtml = (!hasDest && o.terms) ? '<div class="terms-box">'+escapeHtml(o.terms)+'</div>' : '';
+  const linkHtml = (!hasDest && o.link) ? '<a class="learn-link" href="'+o.link+'" target="_blank" rel="noopener">Full offer &amp; terms</a>' : '';
+  const noteHtml = (!hasDest && o.note) ? '<div class="fyi">'+escapeHtml(o.note)+'</div>' : '';
+
+  return '<div class="card'+(isAdvisor?' advisor':'')+'" data-type="'+type+'" data-idx="'+i+'">' +
+    '<button class="remove-card" onclick="removeCard(\''+type+'\','+i+')" aria-label="Remove offer">✕</button>' +
+    '<div class="card-top">' +
+      '<h3 contenteditable="true" data-path="'+type+'.'+i+'" data-field="title" oninput="onEdit(this)">'+escapeHtml(o.title)+'</h3>' +
+      (hasDest ? '' : windowsHtml(o.bw, o.tw)) +
+      '<p class="includes" contenteditable="true" data-path="'+type+'.'+i+'" data-field="includes" oninput="onEdit(this)">'+escapeHtml(o.includes)+'</p>' +
+      noteHtml +
+    '</div>' +
+    '<div class="details">' +
+      destBlock + termsHtml + linkHtml +
+    '</div>' +
+    '<button class="toggle" onclick="if(!editing) this.closest(\'.card\').classList.toggle(\'open\')">View offer details <span class="chev">▾</span></button>' +
+  '</div>';
+}
+
+function render(){
+  document.getElementById('meta-title').textContent = data.meta.title;
+  document.getElementById('meta-subtitle').textContent = data.meta.subtitle;
+  document.getElementById('meta-intro').textContent = data.meta.intro;
+  document.getElementById('meta-source').textContent = data.meta.sourceLine;
+  document.getElementById('meta-next').textContent = data.meta.nextEdition;
+  document.getElementById('meta-status').textContent = data.meta.statusLine;
+  document.getElementById('client-cards').innerHTML = data.client.map((o,i)=>cardHtml('client',i,o)).join('');
+  document.getElementById('advisor-cards').innerHTML = data.advisor.map((o,i)=>cardHtml('advisor',i,o)).join('');
+  document.getElementById('client-count').textContent = data.client.length;
+  document.getElementById('advisor-count').textContent = data.advisor.length;
+}
+
+function onEdit(el){
+  const path = el.getAttribute('data-path');
+  const field = el.getAttribute('data-field');
+  if(path === 'meta'){ data.meta[field] = el.textContent; saveData(); return; }
+  const [type, idxStr] = path.split('.');
+  const idx = parseInt(idxStr, 10);
+  data[type][idx][field] = el.textContent;
+  saveData();
+}
+
+function addCard(type){
+  const blank = { title:"New offer", bw:"Add booking window", tw:"Add travel window", includes:"Add what it includes", terms:"", link:"", note:"" };
+  data[type].push(blank);
+  saveData();
+  render();
+  if(!editing) toggleEdit();
+}
+function removeCard(type, idx){
+  if(!confirm('Remove this offer?')) return;
+  data[type].splice(idx,1);
+  saveData();
+  render();
+}
+
+render();
+
+let clickCount = 0, clickTimer = null;
+document.getElementById('secret-trigger').addEventListener('click', function(){
+  clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(()=>{ clickCount = 0; }, 1500);
+  if(clickCount >= 5){ clickCount = 0; toggleEdit(); }
+});
+
+document.addEventListener('keydown', function(e){
+  const tag = (e.target.tagName || '').toLowerCase();
+  const isEditable = e.target.isContentEditable || tag === 'input' || tag === 'textarea';
+  if(isEditable) return;
+  if(e.altKey && e.shiftKey && e.key.toLowerCase() === 'e'){ e.preventDefault(); toggleEdit(); }
+});
+</script>
+
+</body>
+</html>
