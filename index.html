@@ -93,6 +93,12 @@
   body.editing [contenteditable="true"]:focus{ background:#F0F6FC; }
   .remove-card{ display:none; position:absolute; top:14px; right:14px; width:22px; height:22px; border-radius:50%; border:1px solid #E7C6C6; background:#fff; color:#A32D2D; font-size:13px; line-height:1; cursor:pointer; align-items:center; justify-content:center; }
   body.editing .remove-card{ display:flex; }
+  body.editing .details{ display:block; }
+  body.editing .toggle{ display:none; }
+  body.editing .terms-box{ max-height:none; }
+  body.editing [contenteditable="true"]:empty::before{ content:attr(data-ph); color:#A9ADB0; font-style:italic; }
+  .edit-label{ font-size:10.5px; letter-spacing:1px; text-transform:uppercase; color:#9AA0A2; margin:10px 0 4px; }
+  .edit-link{ font-size:12px; color:var(--swell-dark); word-break:break-all; }
   .add-card{ display:none; align-items:center; justify-content:center; gap:6px; padding:16px; border:1px dashed var(--hairline); border-radius:2px; background:transparent; color:#6B6F72; font-family:'Poppins',sans-serif; font-size:13px; cursor:pointer; margin-bottom:24px; }
   body.editing .add-card{ display:flex; }
 </style>
@@ -162,7 +168,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = 'cv-nov-2026-promo-data-v4';
+const STORAGE_KEY = 'cv-nov-2026-promo-data-v5';
 
 const defaultData = {
  "meta": {
@@ -557,6 +563,15 @@ const defaultData = {
    "terms": "Bookings must have payment to qualify. Groups/FIT Group bookings do not qualify. Other restrictions may apply.",
    "link": "",
    "note": ""
+  },
+  {
+   "title": "Baglioni Hotels — Reservations agent incentive",
+   "bw": "11/1/26 – 11/30/26",
+   "tw": "11/1/26 – 3/31/27",
+   "includes": "The Reservations agent with the highest revenue across the participating hotels wins a 3-night hotel stay certificate at Baglioni Hotel Luna. A $30k revenue minimum is required to qualify. Participating hotels: Baglioni Hotel Regina (Rome), Baglioni Hotel Luna (Venice), and Casa Baglioni (Milan).",
+   "terms": "Must have $30k minimum revenue to qualify. Bookings must have payment to qualify. Groups/FIT Group bookings do not qualify. Other restrictions may apply.",
+   "link": "",
+   "note": ""
   }
  ]
 };
@@ -590,6 +605,7 @@ function resetData(){
 function toggleEdit(){
   editing = !editing;
   document.body.classList.toggle('editing', editing);
+  render();
   if(editing) document.getElementById('save-status').textContent = 'Editing — click any field to change it';
 }
 
@@ -597,47 +613,81 @@ function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,
 
 function linkLabel(url){ return (url.indexOf('aflip') > -1 || url.indexOf('heyzine') > -1) ? 'View flyer' : 'Full offer &amp; terms'; }
 
-function windowsHtml(bw, tw){
-  if(!bw && !tw) return '';
+function ed(tag, cls, path, field, val, ph){
+  return '<'+tag+(cls?' class="'+cls+'"':'')+' contenteditable="true" data-path="'+path+'" data-field="'+field+'" data-ph="'+escapeHtml(ph||'')+'" oninput="onEdit(this)">'+escapeHtml(val)+'</'+tag+'>';
+}
+
+function windowsHtml(o, path){
+  if(editing){
+    return '<div class="windows">' +
+      '<div class="w"><b>Book:</b> '+ed('span','',path,'bw',o.bw,'add booking window')+'</div>' +
+      '<div class="w"><b>Travel:</b> '+ed('span','',path,'tw',o.tw,'add travel window')+'</div>' +
+    '</div>';
+  }
+  if(!o.bw && !o.tw) return '';
   let out = '<div class="windows">';
-  if(bw) out += '<div class="w"><b>Book:</b> '+escapeHtml(bw)+'</div>';
-  if(tw) out += '<div class="w"><b>Travel:</b> '+escapeHtml(tw)+'</div>';
+  if(o.bw) out += '<div class="w"><b>Book:</b> '+escapeHtml(o.bw)+'</div>';
+  if(o.tw) out += '<div class="w"><b>Travel:</b> '+escapeHtml(o.tw)+'</div>';
   out += '</div>';
   return out;
 }
 
-function destHtml(d){
+// Note, terms and link as labeled editable fields (edit mode only)
+function extrasEditHtml(o, path){
+  return '<div class="edit-label">Note</div>' + ed('div','fyi',path,'note',o.note,'add an internal note (optional)') +
+    '<div class="edit-label">Terms &amp; restrictions</div>' + ed('div','terms-box',path,'terms',o.terms,'add terms (optional)') +
+    '<div class="edit-label">Link</div>' + ed('div','edit-link',path,'link',o.link,'paste offer or flyer URL (optional)');
+}
+
+function linkHtml(url){
+  return url ? '<a class="learn-link" href="'+escapeHtml(url)+'" target="_blank" rel="noopener">'+linkLabel(url)+'</a>' : '';
+}
+
+function destHtml(d, path){
+  if(editing){
+    return '<div class="dest">' +
+      ed('div','dest-name',path,'name',d.name,'destination') +
+      windowsHtml(d, path) +
+      ed('div','dest-blurb',path,'blurb',d.blurb,'add offer description') +
+      '<div class="edit-label">Caution</div>' + ed('div','caution',path,'caution',d.caution,'add a caution (optional)') +
+      extrasEditHtml(d, path) +
+    '</div>';
+  }
   const cautionHtml = d.caution ? '<div class="caution">'+escapeHtml(d.caution)+'</div>' : '';
   const noteHtml = d.note ? '<div class="fyi">'+escapeHtml(d.note)+'</div>' : '';
   const termsHtml = d.terms ? '<div class="terms-box">'+escapeHtml(d.terms)+'</div>' : '';
-  const linkHtml = d.link ? '<a class="learn-link" href="'+d.link+'" target="_blank" rel="noopener">'+linkLabel(d.link)+'</a>' : '';
   return '<div class="dest">' +
     '<div class="dest-name">'+escapeHtml(d.name)+'</div>' +
-    windowsHtml(d.bw, d.tw) +
+    windowsHtml(d, path) +
     '<div class="dest-blurb">'+escapeHtml(d.blurb)+'</div>' +
-    cautionHtml + noteHtml + termsHtml + linkHtml +
+    cautionHtml + noteHtml + termsHtml + linkHtml(d.link) +
   '</div>';
 }
 
 function cardHtml(type, i, o){
   const isAdvisor = type === 'advisor';
+  const path = type+'.'+i;
   const hasDest = o.destinations && o.destinations.length;
-  const destBlock = hasDest ? '<div class="dest-list">' + o.destinations.map(destHtml).join('') + '</div>' : '';
-  const termsHtml = (!hasDest && o.terms) ? '<div class="terms-box">'+escapeHtml(o.terms)+'</div>' : '';
-  const linkHtml = (!hasDest && o.link) ? '<a class="learn-link" href="'+o.link+'" target="_blank" rel="noopener">'+linkLabel(o.link)+'</a>' : '';
-  const hasDetails = !!(hasDest || o.terms || o.link);
-  const noteHtml = (!hasDest && o.note) ? '<div class="fyi">'+escapeHtml(o.note)+'</div>' : '';
+  const destBlock = hasDest ? '<div class="dest-list">' + o.destinations.map((d,j)=>destHtml(d, path+'.destinations.'+j)).join('') + '</div>' : '';
+  let detailsInner, noteHtml = '';
+  if(editing){
+    detailsInner = destBlock + (hasDest ? '' : extrasEditHtml(o, path));
+  } else {
+    const termsHtml = (!hasDest && o.terms) ? '<div class="terms-box">'+escapeHtml(o.terms)+'</div>' : '';
+    detailsInner = destBlock + termsHtml + (hasDest ? '' : linkHtml(o.link));
+    noteHtml = (!hasDest && o.note) ? '<div class="fyi">'+escapeHtml(o.note)+'</div>' : '';
+  }
 
   return '<div class="card'+(isAdvisor?' advisor':'')+(type==='res'?' res':'')+'" data-type="'+type+'" data-idx="'+i+'">' +
     '<button class="remove-card" onclick="removeCard(\''+type+'\','+i+')" aria-label="Remove offer">✕</button>' +
     '<div class="card-top">' +
-      '<h3 contenteditable="true" data-path="'+type+'.'+i+'" data-field="title" oninput="onEdit(this)">'+escapeHtml(o.title)+'</h3>' +
-      (hasDest ? '' : windowsHtml(o.bw, o.tw)) +
-      '<p class="includes" contenteditable="true" data-path="'+type+'.'+i+'" data-field="includes" oninput="onEdit(this)">'+escapeHtml(o.includes)+'</p>' +
+      ed('h3','',path,'title',o.title,'offer name') +
+      (hasDest ? '' : windowsHtml(o, path)) +
+      ed('p','includes',path,'includes',o.includes,'what it includes') +
       noteHtml +
     '</div>' +
-    (hasDetails ? '<div class="details">' + destBlock + termsHtml + linkHtml + '</div>' : '') +
-    (hasDetails ? '<button class="toggle" onclick="if(!editing) this.closest(\'.card\').classList.toggle(\'open\')">View offer details <span class="chev">▾</span></button>' : '') +
+    (detailsInner ? '<div class="details">' + detailsInner + '</div>' : '') +
+    (detailsInner ? '<button class="toggle" onclick="this.closest(\'.card\').classList.toggle(\'open\')">View offer details <span class="chev">▾</span></button>' : '') +
   '</div>';
 }
 
@@ -665,14 +715,13 @@ function onEdit(el){
   const path = el.getAttribute('data-path');
   const field = el.getAttribute('data-field');
   if(path === 'meta'){ data.meta[field] = el.textContent; saveData(); return; }
-  const [type, idxStr] = path.split('.');
-  const idx = parseInt(idxStr, 10);
-  data[type][idx][field] = el.textContent;
+  const target = path.split('.').reduce((obj, key)=>obj[key], data);
+  target[field] = el.textContent;
   saveData();
 }
 
 function addCard(type){
-  const blank = { title:"New offer", bw:"Add booking window", tw:"Add travel window", includes:"Add what it includes", terms:"", link:"", note:"" };
+  const blank = { title:"New offer", bw:"", tw:"", includes:"", terms:"", link:"", note:"" };
   data[type].push(blank);
   saveData();
   render();
